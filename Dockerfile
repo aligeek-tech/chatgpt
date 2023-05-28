@@ -1,12 +1,9 @@
 FROM node:19-alpine AS react-client
 WORKDIR /client
-# copy package.json into the container at /client
-COPY /client/.env /client/.env
-COPY /client/package*.json /client/
-# install dependencies
-RUN npm install --legacy-peer-deps
 # Copy the current directory contents into the container at /client
 COPY /client/ /client/
+# install dependencies
+RUN npm install --legacy-peer-deps
 # Set the memory limit for Node.js
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 # Build artifacts
@@ -14,12 +11,10 @@ RUN npm run build
 
 FROM node:19-alpine AS node-api
 WORKDIR /api
-# copy package.json into the container at /api
-COPY /api/package*.json /api/
-# install dependencies
-RUN npm install --legacy-peer-deps
 # Copy the current directory contents into the container at /api
 COPY /api/ /api/
+# install dependencies
+RUN npm install --legacy-peer-deps
 # Copy the client side code
 COPY --from=react-client /client/dist /client/dist
 # Make port 3080 available to the world outside this container
