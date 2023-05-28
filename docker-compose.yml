@@ -15,8 +15,8 @@ services:
   #     - api
   api:
     container_name: chatgpt
-    expose: #This is used to map the container’s ports to the host machine.
-      - "3080"
+    ports: #This is used to map the container’s ports to the host machine.
+      - 3080:3080
     depends_on:
       - mongodb
     image: node-api # Comment this & uncomment below to build from docker hub image
