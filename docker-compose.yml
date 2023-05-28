@@ -45,7 +45,7 @@ services:
     image: mongo
     restart: always
     volumes:
-      - ./data/data-node:/data/db
+      - /var/www/html/config/data/data-node:/data/db
     command: mongod --noauth
     environment:
       TZ: Asia/Tehran
@@ -60,4 +60,4 @@ services:
       - MEILI_HOST=http://meilisearch:7700
       - MEILI_HTTP_ADDR=meilisearch:7700
     volumes:
-      - ./data/meili_data:/meili_data
+      - /var/www/html/config/data/meili_data:/meili_data
