@@ -13,21 +13,10 @@ services:
   #     - /client/node_modules
   #   depends_on:
   #     - api
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    restart: always
-    ports: #This is used to map the container’s ports to the host machine.
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/conf.d/:/etc/nginx/conf.d/
-      - ./nginx/certificates/:/etc/ssl/
-      - ./nginx/log/:/var/log/nginx/
   api:
     container_name: chatgpt
-    ports:
-      - 3080:3080 # Change it to 9000:3080 to use nginx
+    expose: #This is used to map the container’s ports to the host machine.
+      - "3080"
     depends_on:
       - mongodb
     image: node-api # Comment this & uncomment below to build from docker hub image
