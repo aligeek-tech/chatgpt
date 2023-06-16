@@ -5,12 +5,18 @@ import Pages from '../Conversations/Pages';
 import Conversations from '../Conversations';
 import NavLinks from './NavLinks';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { useGetConversationsQuery, useSearchQuery, useGetTodayMessageQuery } from '~/data-provider';
+import {
+  useGetConversationsQuery,
+  useSearchQuery,
+  useGetTodayMessageQuery,
+  useGetAccountsInfoQuery
+} from '~/data-provider';
 import useDebounce from '~/hooks/useDebounce';
 import store from '~/store';
 import { useAuthContext } from '~/hooks/AuthContext';
+import { cn } from '~/utils/';
 
-export function FreeMessage() {
+export function FreeMessage({ account }) {
   const [todayMessages, setTodayMessages] = useState(0);
   const { token } = useAuthContext();
   const todayMessage = useGetTodayMessageQuery({ enabled: !!token });
@@ -28,20 +34,82 @@ export function FreeMessage() {
     return <div></div>;
   }
 
+  if (account) {
+    return (
+      <div
+        className={`flex flex-col justify-center overflow-y-auto border-b border-white/20 py-6 text-sm text-white `}
+      >
+        You Have Premium Account: <br />
+        Account Type: {account.account} Days <br />
+        Remained Days: {account.remainedDays} Days <br />
+      </div>
+    );
+  }
+
   return (
     <div
-      className={`flex flex-[0.1] flex-col justify-center overflow-y-auto border-b border-white/20 text-sm text-white `}
+      className={`flex flex-col justify-center overflow-y-auto border-b border-white/20 py-4 text-sm text-white `}
     >
       Free daily messages: {todayMessages} / 5
     </div>
   );
 }
 
+export function PremiumModal() {
+  const { token } = useAuthContext();
+
+  const handleBuyPremiumAccount = () => {
+    fetch(`/api/accounts/buy`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.zUrl && window) {
+          window.location.href = data.zUrl;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+  return (
+    <div
+      className={`flex items-center justify-center overflow-y-auto border-b border-white/20 py-2 text-sm text-white `}
+    >
+      <button
+        className={cn(
+          'flex w-full cursor-pointer items-center gap-3 bg-gray-700 px-3 py-3 text-sm text-white transition-colors duration-200',
+          ' cursor-pointer text-white'
+        )}
+        onClick={() => {
+          handleBuyPremiumAccount();
+        }}
+      >
+        Buy Premium Account
+      </button>
+    </div>
+  );
+}
+
 export default function Nav({ navVisible, setNavVisible }) {
   const [isHovering, setIsHovering] = useState(false);
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated, token } = useAuthContext();
   const containerRef = useRef(null);
   const scrollPositionRef = useRef(null);
+  const accounts = useGetAccountsInfoQuery({ enabled: !!token });
+  const [account, setAccount] = useState(null);
+
+  useEffect(() => {
+    if (accounts && accounts.data && accounts.data.account) {
+      setAccount(accounts.data.account);
+    } else {
+      setAccount(null);
+    }
+  }, [accounts]);
 
   const [conversations, setConversations] = useState([]);
   // current page
@@ -194,7 +262,8 @@ export default function Nav({ navVisible, setNavVisible }) {
                   />
                 </div>
               </div>
-              <FreeMessage />
+              <FreeMessage account={account} />
+              {!account && <PremiumModal />}
 
               <NavLinks
                 clearSearch={clearSearch}

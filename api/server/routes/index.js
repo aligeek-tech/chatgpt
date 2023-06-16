@@ -1,6 +1,7 @@
 const ask = require('./ask');
 const messages = require('./messages');
 const todayMessages = require('./todayMessages');
+const accounts = require('./accounts');
 const convos = require('./convos');
 const presets = require('./presets');
 const prompts = require('./prompts');
@@ -21,5 +22,6 @@ module.exports = {
   oauth,
   tokenizer,
   endpoints,
-  todayMessages
+  todayMessages,
+  accounts
 };

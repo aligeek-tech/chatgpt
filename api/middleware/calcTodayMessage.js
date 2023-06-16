@@ -1,13 +1,7 @@
+const { getLastAccountsInfo } = require('../models/Account');
 const { Message } = require('../models/Message');
 
-const calcTodayMessage = async (req, res, next) => {
-  const user = req.user;
-  const token = req.body.token;
-
-  if (token) {
-    return next();
-  }
-
+const runFreeFlow = async (user, res, next) => {
   const currentDate = new Date();
   const startOfToday = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
 
@@ -22,6 +16,31 @@ const calcTodayMessage = async (req, res, next) => {
     });
   } else {
     next();
+  }
+};
+
+const calcTodayMessage = async (req, res, next) => {
+  const user = req.user;
+  const token = req.body.token;
+
+  if (token) {
+    return next();
+  }
+
+  let lastUserAccount = await getLastAccountsInfo(req.user);
+  if (lastUserAccount.length > 0) {
+    const currentDate = new Date();
+    const lastAccountDate = lastUserAccount[0].createdAt;
+    const timeDifference = Math.abs(lastAccountDate.getTime() - currentDate.getTime());
+    const differentDays = Math.ceil(timeDifference / (1000 * 3600 * 24)); 
+
+    if (lastUserAccount[0].day - differentDays <= 0) {
+      await runFreeFlow(user, res, next);
+    } else {
+      return next();
+    }
+  } else {
+    await runFreeFlow(user, res, next);
   }
 };
 

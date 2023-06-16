@@ -10,6 +10,10 @@ export const todayMessages = () => {
   return `/api/today/messages`;
 };
 
+export const accountsInfo = () => {
+  return `/api/accounts/me`;
+};
+
 export const abortRequest = (endpoint: string) => {
   return `/api/ask/${endpoint}/abort`;
 };

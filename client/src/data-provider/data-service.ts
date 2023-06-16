@@ -61,6 +61,10 @@ export function getTodayMessages(): Promise<any> {
   return request.get(endpoints.todayMessages());
 }
 
+export function getAccountsInfo(): Promise<any> {
+  return request.get(endpoints.accountsInfo());
+}
+
 export const searchConversations = async(q: string, pageNumber: string): Promise<t.TSearchResults> => {
   return request.get(endpoints.search(q, pageNumber));
 }

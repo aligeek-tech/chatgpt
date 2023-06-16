@@ -13,6 +13,7 @@ import axios from 'axios';
 export enum QueryKeys {
   messages = 'messsages',
   todayMessages = 'todayMessages',
+  accounts = 'accounts',
   allConversations = 'allConversations',
   conversation = 'conversation',
   searchEnabled = 'searchEnabled',
@@ -45,6 +46,18 @@ export const useGetUserQuery = (config?: UseQueryOptions<t.TUser>): QueryObserve
 
 export const useGetTodayMessageQuery = (config?: UseQueryOptions<t.TUser>): QueryObserverResult<t.TUser> => {
   return useQuery<t.TUser>([QueryKeys.todayMessages], () => dataService.getTodayMessages(), {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    retry: false,
+    refetchInterval: 1000,
+    refetchIntervalInBackground: true,
+    ...config
+  });
+};
+
+export const useGetAccountsInfoQuery = (config?: UseQueryOptions<t.TUser>): QueryObserverResult<t.TUser> => {
+  return useQuery<t.TUser>([QueryKeys.accounts], () => dataService.getAccountsInfo(), {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,

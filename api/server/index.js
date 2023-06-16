@@ -43,6 +43,7 @@ const projectPath = path.join(__dirname, '..', '..', 'client');
   app.use('/api/ask', routes.ask);
   app.use('/api/messages', routes.messages);
   app.use('/api/today', routes.todayMessages);
+  app.use('/api/accounts', routes.accounts);
   app.use('/api/convos', routes.convos);
   app.use('/api/presets', routes.presets);
   app.use('/api/prompts', routes.prompts);
