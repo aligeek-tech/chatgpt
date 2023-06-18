@@ -6,7 +6,7 @@ WORKDIR /client
 COPY /client/package*.json /client/
 WORKDIR /
 COPY /package*.json /
-RUN npm install
+RUN npm install --legacy-peer-deps 
 
 # React client build
 FROM base AS react-client
